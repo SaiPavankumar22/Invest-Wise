@@ -13,9 +13,8 @@ env/
 # Environment variables
 .env.local
 
-# Uploaded files
-uploads/*
-!uploads/.gitkeep
+# Uploaded files (recreated at runtime)
+uploads/
 
 # IDE
 .vscode/

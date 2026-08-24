@@ -30,9 +30,8 @@ __pycache__/
 *.so
 *.egg-info/
 
-# Uploaded files
-backend/uploads/*
-!backend/uploads/.gitkeep
+# Uploaded files (recreated at runtime)
+backend/uploads/
 
 # Editor directories and files
 .vscode/*
