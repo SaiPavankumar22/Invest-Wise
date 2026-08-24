@@ -3,9 +3,7 @@ flask-cors==5.0.1
 requests==2.32.3
 beautifulsoup4==4.12.3
 python-dotenv==1.0.1
-langchain==0.3.14
-langchain-google-genai==2.0.8
-langchain-groq==0.2.3
+openai>=1.60.0
 PyMuPDF==1.25.3
 pytesseract==0.3.13
 Pillow==11.1.0

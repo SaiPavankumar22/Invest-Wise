@@ -18,8 +18,7 @@ An AI-powered investment advisory platform that combines modern web technologies
 - **Saved Schemes** — Save and track favorite investment schemes
 
 ### Backend (Python + Flask)
-- **LLM Integration** — Google Gemini for financial advice and document analysis
-- **Groq AI** — Document analysis using LLaMA 3.3 model
+- **Nebius AI (Gemma 2 27B)** — LLM-powered financial advice and document analysis
 - **YouTube API** — Fetch investment-related educational videos
 - **Web Scraping** — Real-time data from ET Money, LIC India, India Post, and gold price sources
 - **OCR Processing** — Extract text from PDFs and images using Tesseract
@@ -52,7 +51,13 @@ investwise/
 │   └── eslint.config.js       # ESLint configuration
 │
 ├── backend/                   # Python Flask backend
-│   ├── app.py                 # Main Flask application
+│   ├── app.py                 # Flask routes (thin layer)
+│   ├── services/              # Business logic modules
+│   │   ├── llm_service.py     # Nebius AI (Gemma 2 27B) integration
+│   │   ├── youtube_service.py # YouTube Data API
+│   │   ├── investment_service.py # Investment recommendations
+│   │   ├── scraper_service.py # Web scraping (MFs, LIC, Post Office, Gold)
+│   │   └── document_service.py # OCR + LLM document analysis
 │   ├── requirements.txt       # Python dependencies
 │   ├── uploads/               # File upload directory
 │   └── .env.example           # Environment variables template
@@ -105,14 +110,11 @@ The backend will be available at `http://localhost:5000`
 Create a `.env` file in the `backend/` directory:
 
 ```env
-# Google Gemini API Key (for financial advice)
-GEMINI_API_KEY=your_gemini_api_key
-
-# Groq API Key (for document analysis)
-GROQ_API_KEY=your_groq_api_key
+# Nebius AI Studio API Key (required — https://studio.nebius.ai)
+NEBIUS_API_KEY=your_nebius_api_key_here
 
 # YouTube Data API Key
-YOUTUBE_API_KEY=your_youtube_api_key
+YOUTUBE_API_KEY=your_youtube_api_key_here
 YOUTUBE_BASE_URL=https://www.googleapis.com/youtube/v3
 ```
 
@@ -124,7 +126,7 @@ YOUTUBE_BASE_URL=https://www.googleapis.com/youtube/v3
 | UI Components | Radix UI, Framer Motion, Recharts |
 | State Management | React Query, React Context |
 | Backend | Python, Flask, Flask-CORS |
-| AI/ML | Google Gemini, Groq (LLaMA 3.3), LangChain |
+| AI/ML | Nebius AI Studio (Google Gemma 2 27B IT) via OpenAI SDK |
 | OCR | Tesseract, PyMuPDF, Pillow |
 | Data Sources | YouTube API, Web Scraping (ET Money, LIC, India Post) |
 
