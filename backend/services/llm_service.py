@@ -10,20 +10,22 @@ from openai import OpenAI
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Nebius client (OpenAI-compatible)
+# Nebius client (OpenAI-compatible, lazy-initialized)
 # ---------------------------------------------------------------------------
 
 NEBIUS_BASE_URL = os.getenv("NEBIUS_BASE_URL", "https://api.studio.nebius.ai/v1")
 NEBIUS_API_KEY = os.getenv("NEBIUS_API_KEY", "")
-NEBIUS_MODEL = os.getenv("NEBIUS_MODEL", "google/gemma-2-27b-it")
+NEBIUS_MODEL = os.getenv("NEBIUS_MODEL", "google/gemma-3-27b-it")
+
+_client: OpenAI | None = None
 
 
 def _get_client() -> OpenAI:
-    """Return an OpenAI-compatible client pointing at Nebius."""
-    return OpenAI(base_url=NEBIUS_BASE_URL, api_key=NEBIUS_API_KEY)
-
-
-llm_client = _get_client()
+    """Return an OpenAI-compatible client pointing at Nebius (created once)."""
+    global _client
+    if _client is None:
+        _client = OpenAI(base_url=NEBIUS_BASE_URL, api_key=NEBIUS_API_KEY or "not-set")
+    return _client
 
 
 # ---------------------------------------------------------------------------
@@ -50,7 +52,8 @@ def get_financial_advice(user_query: str) -> str:
     if not user_query:
         raise ValueError("user_query must not be empty")
 
-    response = llm_client.chat.completions.create(
+    client = _get_client()
+    response = client.chat.completions.create(
         model=NEBIUS_MODEL,
         messages=[
             {"role": "system", "content": FINANCIAL_ADVICE_SYSTEM_PROMPT},
@@ -87,7 +90,8 @@ def analyze_document(text: str) -> str:
     if not text.strip():
         raise ValueError("Document text must not be empty")
 
-    response = llm_client.chat.completions.create(
+    client = _get_client()
+    response = client.chat.completions.create(
         model=NEBIUS_MODEL,
         messages=[
             {"role": "system", "content": DOCUMENT_ANALYSIS_SYSTEM_PROMPT},
