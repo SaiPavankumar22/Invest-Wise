@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-_USER_AGENT = {"User-Agent": "Mozilla/5.0"}
+_USER_AGENT = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 
 # ---------------------------------------------------------------------------
@@ -100,126 +100,189 @@ def scrape_lic_policies() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Post Office Schemes
+# Post Office Schemes (curated data — India Post website is JS-rendered)
 # ---------------------------------------------------------------------------
 
 def scrape_post_office_policies() -> dict:
-    """Scrape saving schemes from India Post."""
-    url = "https://www.indiapost.gov.in/Financial/pages/content/post-office-saving-schemes.aspx"
-    response = requests.get(url, headers=_USER_AGENT, timeout=15)
-    response.raise_for_status()
+    """
+    Return Post Office savings scheme data.
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    policies: dict[str, list[dict]] = {}
-
-    for item in soup.find_all("li", class_="li_header"):
-        title_tag = item.find("a")
-        content_tag = item.find("div", class_="li_content")
-        if not (title_tag and content_tag):
-            continue
-
-        title = title_tag.text.strip()
-        description = content_tag.get_text(strip=True)
-
-        lower_title = title.lower()
-        if "saving" in lower_title:
-            category = "Savings Schemes"
-        elif "deposit" in lower_title:
-            category = "Time Deposits"
-        elif "income" in lower_title:
-            category = "Monthly Income Schemes"
-        elif "senior" in lower_title:
-            category = "Senior Citizens Schemes"
-        elif "recurring" in lower_title:
-            category = "Recurring Deposits"
-        else:
-            category = "Other Schemes"
-
-        policies.setdefault(category, []).append({
-            "title": title,
-            "description": description,
-            "interestRate": "Varies",
-            "minInvestment": "Depends on scheme",
-            "tenure": "Depends on scheme",
-            "link": url,
-        })
-
-    return policies
+    The India Post website is JS-rendered, so we provide curated scheme data
+    based on the latest government-published rates and terms.
+    """
+    return {
+        "Savings Schemes": [
+            {
+                "title": "Post Office Savings Account",
+                "description": "Basic savings account with 4% annual interest. Minimum deposit Rs. 20.",
+                "interestRate": "4.0%",
+                "minInvestment": "Rs. 20",
+                "tenure": "No lock-in",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+            {
+                "title": "1-Year Time Deposit",
+                "description": "Fixed deposit for 1 year with quarterly compounding.",
+                "interestRate": "6.9%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "1 year",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+            {
+                "title": "2-Year Time Deposit",
+                "description": "Fixed deposit for 2 years with quarterly compounding.",
+                "interestRate": "7.0%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "2 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+            {
+                "title": "3-Year Time Deposit",
+                "description": "Fixed deposit for 3 years with quarterly compounding.",
+                "interestRate": "7.1%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "3 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+            {
+                "title": "5-Year Time Deposit",
+                "description": "Fixed deposit for 5 years. Eligible for Section 80C tax benefits.",
+                "interestRate": "7.5%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "5 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+        ],
+        "Monthly Income Schemes": [
+            {
+                "title": "Monthly Income Scheme (MIS)",
+                "description": "Earn monthly interest on your investment. Max deposit Rs. 9L (individual).",
+                "interestRate": "7.4%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "5 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+        ],
+        "Recurring Deposits": [
+            {
+                "title": "Recurring Deposit (RD)",
+                "description": "Save a fixed amount every month for 5 years. Min Rs. 100/month.",
+                "interestRate": "6.7%",
+                "minInvestment": "Rs. 100/month",
+                "tenure": "5 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+        ],
+        "Senior Citizens Schemes": [
+            {
+                "title": "Senior Citizens Savings Scheme (SCSS)",
+                "description": "For citizens aged 60+. Max deposit Rs. 30 lakh. Quarterly payouts.",
+                "interestRate": "8.2%",
+                "minInvestment": "Rs. 1,000",
+                "tenure": "5 years (extendable by 3)",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+        ],
+        "Other Schemes": [
+            {
+                "title": "Public Provident Fund (PPF)",
+                "description": "Long-term savings with Section 80C tax benefits. 15-year lock-in.",
+                "interestRate": "7.1%",
+                "minInvestment": "Rs. 500/year",
+                "tenure": "15 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+            {
+                "title": "Sukanya Samriddhi Yojana (SSY)",
+                "description": "Savings scheme for girl child below 10 years. Tax-free returns.",
+                "interestRate": "8.2%",
+                "minInvestment": "Rs. 250/year",
+                "tenure": "21 years",
+                "link": "https://www.indiapost.gov.in/banking-services/savings",
+            },
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------
-# Gold Prices — Economic Times
+# Gold Prices — Economic Times (updated URL and selectors)
 # ---------------------------------------------------------------------------
 
 def scrape_gold_prices() -> dict:
     """Scrape gold price data from Economic Times."""
-    url = "https://economictimes.indiatimes.com/markets/gold-rate"
+    url = "https://economictimes.indiatimes.com/markets/gold-rate-in-india-today"
     response = requests.get(url, headers=_USER_AGENT, timeout=15)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
-    gold_data: list[dict] = []
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    current_price_div = soup.find("div", class_="goldPrice")
-    if current_price_div:
-        span = current_price_div.find("span")
-        if span:
-            gold_data.append({
-                "type": "Current 24K Gold Price",
-                "price": span.text.strip(),
-                "change": "N/A",
-                "timestamp": now,
-            })
+    # Find the 30-day history table (Date, 22 Carat Price, 24 Carat Price)
+    tables = soup.find_all("table")
+    historical_data: list[dict] = []
 
-    table = soup.find("table", class_="goldSilverTable")
-    if table:
-        for row in table.find("tbody").find_all("tr"):
-            cols = row.find_all("td")
-            if len(cols) >= 3:
-                gold_data.append({
-                    "type": cols[0].text.strip(),
-                    "price": cols[1].text.strip(),
-                    "change": cols[2].text.strip(),
-                    "timestamp": now,
-                })
+    for table in tables:
+        rows = table.find_all("tr")
+        if len(rows) < 5:
+            continue
+        header_cells = rows[0].find_all(["th", "td"])
+        headers = [c.get_text(strip=True) for c in header_cells]
+        if "Date" in headers and "22 Carat Price" in headers:
+            for row in rows[1:]:
+                cells = row.find_all(["th", "td"])
+                if len(cells) >= 3:
+                    historical_data.append({
+                        "date": cells[0].get_text(strip=True),
+                        "price_22k": cells[1].get_text(strip=True),
+                        "price_24k": cells[2].get_text(strip=True),
+                        "timestamp": now,
+                    })
+            break
 
     return {
         "categories": {
-            "Current Prices": [d for d in gold_data if d["type"] == "Current 24K Gold Price"],
-            "Historical Prices": [d for d in gold_data if d["type"] != "Current 24K Gold Price"],
+            "Current Prices": historical_data[:1] if historical_data else [],
+            "Historical Prices": historical_data[1:30],
         }
     }
 
 
 # ---------------------------------------------------------------------------
-# Gold Rates — BankBazaar (city-wise)
+# Gold Rates — Economic Times (city-wise, updated URL)
 # ---------------------------------------------------------------------------
 
 def scrape_gold_rates() -> list[dict]:
-    """Scrape city-wise gold rates from BankBazaar."""
-    url = "https://www.bankbazaar.com/gold-rate-india.html"
+    """Scrape city-wise gold rates from Economic Times."""
+    url = "https://economictimes.indiatimes.com/markets/gold-rate-in-india-today"
     response = requests.get(url, headers=_USER_AGENT, timeout=15)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
-    table = soup.find("table")
-    if not table:
-        return []
 
-    gold_rates: list[dict] = []
-    tbody = table.find("tbody")
-    if not tbody:
-        return []
-
-    for row in tbody.find_all("tr"):
-        cols = row.find_all("td")
-        if len(cols) < 3:
+    # Find the city-wise table (117+ rows)
+    tables = soup.find_all("table")
+    for table in tables:
+        rows = table.find_all("tr")
+        if len(rows) < 20:
             continue
-        gold_rates.append({
-            "city": cols[0].text.strip(),
-            "gold_22k": cols[1].text.strip(),
-            "gold_24k": cols[2].text.strip(),
-        })
+        header_cells = rows[0].find_all(["th", "td"])
+        headers = [c.get_text(strip=True) for c in header_cells]
+        if any("Standard Gold" in h or "Pure Gold" in h for h in headers):
+            gold_rates: list[dict] = []
+            for row in rows[2:]:  # Skip two header rows
+                cells = row.find_all(["th", "td"])
+                if len(cells) < 5:
+                    continue
+                city = cells[0].get_text(strip=True).replace("Gold Rate in ", "")
+                if not city:
+                    continue
+                gold_rates.append({
+                    "city": city,
+                    "gold_22k_1g": cells[1].get_text(strip=True),
+                    "gold_22k_8g": cells[2].get_text(strip=True),
+                    "gold_24k_1g": cells[3].get_text(strip=True),
+                    "gold_24k_8g": cells[4].get_text(strip=True),
+                })
+            return gold_rates
 
-    return gold_rates
+    return []

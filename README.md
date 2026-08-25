@@ -1,161 +1,168 @@
-# InvestWise 💰
+# InvestWise — AI-Powered Investment Advisory Platform
 
-An AI-powered investment advisory platform that combines modern web technologies with financial intelligence to help users make informed investment decisions.
+> Make smarter investment decisions with AI-powered recommendations, real-time market data, and expert financial guidance.
 
-## 🌟 Features
-
-### Frontend (React + TypeScript)
-- **Investment Advisor** — AI-driven personalized investment recommendations based on user profile
-- **Financial Document Analysis** — Upload and analyze financial documents (PDF, images) using OCR + AI
-- **Mutual Fund Explorer** — Browse and explore mutual fund options from ET Money
-- **LIC Policy Explorer** — Explore LIC insurance policies across categories
-- **Post Office Schemes** — Browse Indian Post Office savings schemes
-- **Gold Rate Tracker** — Real-time gold price tracking and historical data
-- **Video Guides** — Educational investment video content via YouTube integration
-- **Financial ChatBot** — AI-powered chatbot for financial queries
-- **Community Forum** — Social features for investment discussions and sharing
-- **Dark Mode** — Full theme support with dark/light mode toggle
-- **Saved Schemes** — Save and track favorite investment schemes
-
-### Backend (Python + Flask)
-- **Nebius AI (Gemma 2 27B)** — LLM-powered financial advice and document analysis
-- **YouTube API** — Fetch investment-related educational videos
-- **Web Scraping** — Real-time data from ET Money, LIC India, India Post, and gold price sources
-- **OCR Processing** — Extract text from PDFs and images using Tesseract
-- **File Upload** — Secure file handling for document analysis
-
-## 📁 Project Structure
+## 🏗️ Architecture
 
 ```
 investwise/
-├── frontend/                  # React frontend application
+├── frontend/           # React + TypeScript + Vite + Tailwind CSS
 │   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   ├── pages/             # Route-level page components
-│   │   ├── contexts/          # React Context providers
-│   │   ├── types/             # TypeScript type definitions
-│   │   ├── Community/         # Community feature module
-│   │   │   ├── components/    # Community-specific components
-│   │   │   ├── pages/         # Community pages
-│   │   │   ├── hooks/         # Custom hooks
-│   │   │   ├── services/      # API services
-│   │   │   └── utils/         # Utility functions
-│   │   ├── App.tsx            # Main app with routing
-│   │   ├── main.tsx           # Entry point
-│   │   └── index.css          # Global styles
-│   ├── public/                # Static assets
-│   ├── package.json           # Frontend dependencies
-│   ├── vite.config.ts         # Vite configuration
-│   ├── tailwind.config.js     # Tailwind CSS configuration
-│   ├── tsconfig.json          # TypeScript configuration
-│   └── eslint.config.js       # ESLint configuration
-│
-├── backend/                   # Python Flask backend
-│   ├── app.py                 # Flask routes (thin layer)
-│   ├── services/              # Business logic modules
-│   │   ├── llm_service.py     # Nebius AI (Gemma 2 27B) integration
-│   │   ├── youtube_service.py # YouTube Data API
-│   │   ├── investment_service.py # Investment recommendations
-│   │   ├── scraper_service.py # Web scraping (MFs, LIC, Post Office, Gold)
-│   │   └── document_service.py # OCR + LLM document analysis
-│   ├── requirements.txt       # Python dependencies
-│   ├── uploads/               # File upload directory
-│   └── .env.example           # Environment variables template
-│
-├── .gitignore                 # Git ignore rules
-└── README.md                  # Project documentation
+│   │   ├── components/ # Navbar, Footer, ChatBot, Login, SignUp, etc.
+│   │   ├── pages/      # Home (Landing), Advisor, Videos, etc.
+│   │   ├── contexts/   # ThemeContext, SavedSchemesContext
+│   │   ├── types/      # TypeScript type definitions
+│   │   └── lib/        # Utilities
+│   └── ...
+├── backend/            # Python Flask + MongoDB
+│   ├── app.py          # Flask routes (auth + financial APIs)
+│   ├── services/       # Modular service layer
+│   │   ├── llm_service.py          # Nebius AI (Gemma 3 27B-IT)
+│   │   ├── youtube_service.py      # YouTube Data API
+│   │   ├── investment_service.py   # Rule-based recommendations
+│   │   ├── scraper_service.py      # Web scraping (ET, LIC, etc.)
+│   │   └── document_service.py     # OCR + LLM document analysis
+│   ├── uploads/        # User-uploaded financial documents
+│   ├── requirements.txt
+│   └── .env.example
+└── README.md
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ and npm
+- Node.js 18+
 - Python 3.9+
-- Tesseract OCR (for document analysis)
+- MongoDB (running on localhost:27017)
 
-### Frontend Setup
-
+### Frontend
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev       # → http://localhost:5173
 ```
 
-The frontend will be available at `http://localhost:5173`
-
-### Backend Setup
-
+### Backend
 ```bash
 cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Set up environment variables
 cp .env.example .env
 # Edit .env with your API keys
-
-# Run the server
-python app.py
+python app.py     # → http://localhost:5000
 ```
 
-The backend will be available at `http://localhost:5000`
+## 🔑 Environment Variables
 
-### Environment Variables
-
-Create a `.env` file in the `backend/` directory:
-
+Create `backend/.env`:
 ```env
-# Nebius AI Studio API Key (required — https://studio.nebius.ai)
-NEBIUS_API_KEY=your_nebius_api_key_here
+# Nebius AI Studio (Gemma 3 27B-IT)
+NEBIUS_API_KEY=your_key
 
-# YouTube Data API Key
-YOUTUBE_API_KEY=your_youtube_api_key_here
-YOUTUBE_BASE_URL=https://www.googleapis.com/youtube/v3
+# YouTube Data API (optional)
+YOUTUBE_API_KEY=your_key
+
+# MongoDB (default localhost:27017)
+MONGO_URI=mongodb://localhost:27017
+
+# JWT Secret (change in production!)
+JWT_SECRET=your-random-secret
 ```
 
-## 🛠️ Tech Stack
+## 🛠️ API Endpoints
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS |
-| UI Components | Radix UI, Framer Motion, Recharts |
-| State Management | React Query, React Context |
-| Backend | Python, Flask, Flask-CORS |
-| AI/ML | Nebius AI Studio (Google Gemma 2 27B IT) via OpenAI SDK |
-| OCR | Tesseract, PyMuPDF, Pillow |
-| Data Sources | YouTube API, Web Scraping (ET Money, LIC, India Post) |
-
-## 📡 API Endpoints
-
+### Authentication (MongoDB)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/ask` | Get AI financial advice |
-| POST | `/get_videos` | Fetch YouTube videos |
+| POST | `/signup` | Create account (username, email, password) |
+| POST | `/login` | Login → returns JWT token |
+| GET | `/profile` | Get user profile (requires Bearer token) |
+| PUT | `/profile` | Update user profile |
+
+### Financial Advisor (LLM)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/ask` | Ask AI financial advisor |
+| POST | `/get_videos` | Get YouTube video suggestions |
 | POST | `/get_investment_options` | Get investment recommendations |
-| GET | `/get-mutual-funds` | Scrape mutual fund data |
-| GET | `/lic_policies` | Fetch LIC policies |
-| GET | `/post_office_policies` | Fetch Post Office schemes |
-| GET | `/gold_prices` | Get gold price data |
-| GET | `/get_gold_rates` | Scrape gold rates by city |
+
+### Market Data (Scrapers)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/get_gold_rates` | City-wise gold rates (Economic Times) |
+| GET | `/gold_prices` | 30-day gold price history |
+| GET | `/get-mutual-funds` | Featured mutual funds (ET Money) |
+| GET | `/lic_policies` | LIC policy details |
+| GET | `/post_office_policies` | Post office saving schemes |
+
+### Documents
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/upload_file` | Upload & analyze financial documents |
 
-## 🤝 Contributing
+## 🎯 Features
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### 🏠 Landing Page
+- Hero section with animated background
+- Stats counter, how-it-works steps
+- Feature cards with gradient icons
+- Investment scheme explorer with save/favorite
+- Testimonials and CTA sections
 
-## 📄 License
+### 🤖 AI Financial Advisor
+- Chat with AI about investment queries
+- Powered by Nebius AI (Gemma 3 27B-IT)
+- Real-time responses for financial guidance
 
-This project is licensed under the MIT License.
+### 📊 Investment Recommendations
+- Rule-based engine matching age, risk, horizon, budget
+- 14+ investment schemes across fixed and recurring categories
 
----
+### 📄 Document Analyzer
+- Upload PDFs, images, or text files
+- OCR for scanned documents
+- AI-powered analysis and summarization
 
-Built with ❤️ for smarter financial decisions
+### 📈 Live Market Data
+- Gold rates scraped from Economic Times
+- Mutual fund data from ET Money
+- LIC policy information from LIC India
+- Post office saving scheme details
+
+### 🔐 Authentication
+- MongoDB-backed user storage
+- bcrypt password hashing
+- JWT token authentication (72-hour expiry)
+- Profile management
+
+### 💬 AI Chatbot
+- Floating chatbot widget on all pages
+- Real-time AI responses for investment queries
+
+### 🎨 UI/UX
+- Dark/Light theme toggle
+- Fully responsive design
+- Tailwind CSS with custom animations
+- Glass morphism effects and gradients
+
+## 📦 Tech Stack
+
+**Frontend:**
+- React 18 + TypeScript
+- Vite 5
+- Tailwind CSS 3
+- React Router 6
+- Lucide Icons
+- Framer Motion
+- Recharts (charts)
+
+**Backend:**
+- Python Flask
+- MongoDB (pymongo)
+- bcrypt + PyJWT (auth)
+- OpenAI SDK → Nebius AI Studio
+- BeautifulSoup4 (web scraping)
+- PyMuPDF + Tesseract (OCR)
+
+## ⚠️ Disclaimer
+
+Investment in financial instruments involves risks. Please read all scheme-related documents carefully before investing. This platform is for educational and informational purposes only.
