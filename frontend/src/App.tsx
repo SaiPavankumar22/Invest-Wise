@@ -20,6 +20,8 @@ import { PostOfficeSchemeExplorer } from './components/PostOfficeSchemes';
 import InvestmentAnalysis from './components/FinancialAnalysis';
 import GoldRatesTable from './components/Gold';
 import FinanceCoach from './pages/FinanceCoach';
+import AgentHub from './pages/AgentHub';
+import { TaxPlanningPage, RetirementCalculatorPage, EMIComparisonPage, InsuranceAdvisorPage, GoalPlannerPage, CreditScorePage } from './pages/AgentPages';
 
 
 
@@ -51,6 +53,13 @@ function AppRoutes() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signUp' element={<SignUp/>}/>
         <Route path="/finance-coach" element={<MainLayout><FinanceCoach/></MainLayout>}/>
+        <Route path="/agents" element={<MainLayout><AgentHub/></MainLayout>}/>
+        <Route path="/agents/tax-planning" element={<MainLayout><TaxPlanningPage/></MainLayout>}/>
+        <Route path="/agents/retirement" element={<MainLayout><RetirementCalculatorPage/></MainLayout>}/>
+        <Route path="/agents/emi-compare" element={<MainLayout><EMIComparisonPage/></MainLayout>}/>
+        <Route path="/agents/insurance" element={<MainLayout><InsuranceAdvisorPage/></MainLayout>}/>
+        <Route path="/agents/goal-planner" element={<MainLayout><GoalPlannerPage/></MainLayout>}/>
+        <Route path="/agents/credit-score" element={<MainLayout><CreditScorePage/></MainLayout>}/>
         <Route path="/investments" element={<MainLayout><InvestmentsAdvisor/></MainLayout>}/>
         <Route path="/video-guides" element={<MainLayout><VideoGuides /></MainLayout>} />
         <Route path="/advice" element={<MainLayout><Advice/></MainLayout>}/>
