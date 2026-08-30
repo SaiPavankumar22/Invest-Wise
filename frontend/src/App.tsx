@@ -19,6 +19,7 @@ import { LICPolicyExplorer } from './components/LICPolicyExplorer';
 import { PostOfficeSchemeExplorer } from './components/PostOfficeSchemes';
 import InvestmentAnalysis from './components/FinancialAnalysis';
 import GoldRatesTable from './components/Gold';
+import FinanceCoach from './pages/FinanceCoach';
 
 
 
@@ -49,6 +50,7 @@ function AppRoutes() {
         <Route path="/saved" element={<MainLayout><SavedSchemes /></MainLayout>} />
         <Route path='/login' element={<Login/>}/>
         <Route path='/signUp' element={<SignUp/>}/>
+        <Route path="/finance-coach" element={<MainLayout><FinanceCoach/></MainLayout>}/>
         <Route path="/investments" element={<MainLayout><InvestmentsAdvisor/></MainLayout>}/>
         <Route path="/video-guides" element={<MainLayout><VideoGuides /></MainLayout>} />
         <Route path="/advice" element={<MainLayout><Advice/></MainLayout>}/>

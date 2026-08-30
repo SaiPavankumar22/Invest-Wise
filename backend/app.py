@@ -28,6 +28,7 @@ from services.scraper_service import (
     scrape_gold_rates,
 )
 from services.document_service import process_uploaded_file
+from services.finance_coach_service import analyze_finances
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -234,6 +235,29 @@ def get_gold_rates():
     except Exception as e:
         logging.error("Gold rate scrape error: %s", e)
         return jsonify([]), 500
+
+
+# ---------------------------------------------------------------------------
+# Routes — Finance Coach (Multi-Agent Analysis)
+# ---------------------------------------------------------------------------
+
+
+@app.route("/analyze-finances", methods=["POST"])
+def analyze_finances_route():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided."}), 400
+
+    monthly_income = data.get("monthly_income")
+    if monthly_income is None:
+        return jsonify({"error": "monthly_income is required."}), 400
+
+    try:
+        results = analyze_finances(data)
+        return jsonify(results)
+    except Exception as e:
+        logging.error("Finance coach error: %s", e)
+        return jsonify({"error": str(e)}), 500
 
 
 # ---------------------------------------------------------------------------
